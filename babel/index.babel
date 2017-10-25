@@ -1,0 +1,247 @@
+/* Presentational components */
+const Greeting = (props) =>
+ /*Hello {props.name}{props.punc}*/
+<h2>What would you like to learn?</h2>;
+
+const Randomizer = (props) =>
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" className="goo">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo"/>
+    </filter>
+  </defs>
+</svg>
+
+<span className="button--bubble__container">
+  <a href="http://en.wikipedia.org/wiki/Special:Random" className="button button--bubble" target = "_blank">
+    SURPRISE ME
+  </a>
+  <span className="button--bubble__effect-container">
+    <span className="circle top-left"></span>
+    <span className="circle top-left"></span>
+    <span className="circle top-left"></span>
+
+    <span className="button effect-button"></span>
+
+    <span className="circle bottom-right"></span>
+    <span className="circle bottom-right"></span>
+    <span className="circle bottom-right"></span>
+  </span>
+</span>
+</div>
+
+/* State components */
+class SearchBar extends React.Component {
+  /*Callback for SearchBar props to update Wiki - keeping track of what we're searching*/
+constructor(){
+  super();
+  this.state = {
+    searchText: ''
+  };
+}
+/*This is setting the value of searchText as it's getting inputted*/
+ handleInputChange(event) {
+   this.setState({
+     searchText: event.target.value
+   });
+ }
+  
+//Grab the value and call the function we pass down from Wikipedia viewer
+  
+handleSubmit(event) {
+  event.preventDefault();
+  let searchText = this.state.searchText.trim(); //Remove whitespace in text
+  if (!searchText) { //if no search term is typed return early and do nothing
+    return;
+  }
+  console.log(searchText);
+  this.props.onSearch(searchText); //Execute call back here
+  this.setState({ searchText: ''}); //Reset the box after search - optional
+}
+  
+  
+  render(){
+    return(
+  
+        <form className="search" onSubmit={this.handleSubmit.bind(this)}>
+          <a href="#" className="search-button"><i className="fa fa-search"></i></a>
+          <input 
+            type="search" 
+            placeholder="Search and hit enter!" 
+            onChange={this.handleInputChange.bind(this)} 
+            value={this.state.searchText}>
+        </input>
+        </form>
+     
+    );
+  }
+}
+
+/*Single Result*/
+          
+function Result(props) {
+  return (
+    <a href={props.url} className="result" target="_blank" rel="noopener noreferrer">
+      <div>
+        <h2>{props.title}</h2>
+        <p>{props.description}</p>
+      </div>
+    </a>
+  );
+}
+
+/*Result list component*/
+//results-1 returns search titles
+//results-2 returns captions
+//results-3 returns URLs
+class ResultList extends React.Component {
+  render(){
+//create a variable to map and parse results
+    let results = this.props.results[1].map((result,index) => {
+      return (
+//adding a unique key to each result - send props to single Result component to render
+        <Result 
+          key={index}
+          title = {this.props.results[1][index]} 
+          description = {this.props.results[2][index]}
+          url ={this.props.results[3][index]}
+        />
+      );
+  });
+    return (
+      <div className="results">{results}</div>
+    );
+  }
+}
+          
+
+/*Container component*/
+class WikipediaViewer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      searchText: '',
+      isRandom: false,
+      //initialize state of results here
+      results: [
+        '',
+        [],
+        [],
+        []
+      ] 
+    };
+    
+this.handleSearchInput = this.handleSearchInput.bind(this);
+this.handleRandomInput = this.handleRandomInput.bind(this);
+    
+  };
+  
+//Callback function from Search Bar component which sets state of search text
+handleSearchInput(searchText){
+//Place Wiki API here - using superAgent
+    superagent.get('https://en.wikipedia.org/w/api.php')
+    .query({
+      search: searchText, // The search keyword passed by SearchBar
+      action: 'opensearch', //you can use the any search here provided?
+      format: 'json' // We want JSON back
+    })
+    .use(jsonp) //use the json plugin
+    .end((error,response) => {
+      if(error) {
+        console.log(error);
+      } else {
+        //set the state once results are back to send us props to ResultList component
+        this.setState({ results: response.body }); 
+      }
+    });
+  }
+  
+  handleRandomInput(isRandom) {
+    this.setState({
+      isRandom: isRandom
+    })
+  }
+  
+  
+  render(){
+    return (
+      <div>
+        <Greeting/>
+        <SearchBar 
+          onSearch = {this.handleSearchInput.bind(this)}
+          isRandom = {this.state.isRandom}
+          handleSearchInput = {this.handleSearchInput}
+          handleRandomInput = {this.handleRandomInput}
+        />
+        <Randomizer />
+        <ResultList results={this.state.results}/>
+      
+      </div>
+    );
+  }
+}
+
+// ========================================
+
+
+ReactDOM.render(
+  <WikipediaViewer/>,
+  document.getElementById('root')
+);
+
+
+
+// ========================================
+
+
+
+/*--Animations for Bubble Button--*/
+$('.button--bubble').each(function() {
+  var $circlesTopLeft = $(this).parent().find('.circle.top-left');
+  var $circlesBottomRight = $(this).parent().find('.circle.bottom-right');
+
+  var tl = new TimelineLite();
+  var tl2 = new TimelineLite();
+
+  var btTl = new TimelineLite({ paused: true });
+
+  tl.to($circlesTopLeft, 1.2, { x: -25, y: -25, scaleY: 2, ease: SlowMo.ease.config(0.1, 0.7, false) });
+  tl.to($circlesTopLeft.eq(0), 0.1, { scale: 0.2, x: '+=6', y: '-=2' });
+  tl.to($circlesTopLeft.eq(1), 0.1, { scaleX: 1, scaleY: 0.8, x: '-=10', y: '-=7' }, '-=0.1');
+  tl.to($circlesTopLeft.eq(2), 0.1, { scale: 0.2, x: '-=15', y: '+=6' }, '-=0.1');
+  tl.to($circlesTopLeft.eq(0), 1, { scale: 0, x: '-=5', y: '-=15', opacity: 0 });
+  tl.to($circlesTopLeft.eq(1), 1, { scaleX: 0.4, scaleY: 0.4, x: '-=10', y: '-=10', opacity: 0 }, '-=1');
+  tl.to($circlesTopLeft.eq(2), 1, { scale: 0, x: '-=15', y: '+=5', opacity: 0 }, '-=1');
+
+  var tlBt1 = new TimelineLite();
+  var tlBt2 = new TimelineLite();
+  
+  tlBt1.set($circlesTopLeft, { x: 0, y: 0, rotation: -45 });
+  tlBt1.add(tl);
+
+  tl2.set($circlesBottomRight, { x: 0, y: 0 });
+  tl2.to($circlesBottomRight, 1.1, { x: 30, y: 30, ease: SlowMo.ease.config(0.1, 0.7, false) });
+  tl2.to($circlesBottomRight.eq(0), 0.1, { scale: 0.2, x: '-=6', y: '+=3' });
+  tl2.to($circlesBottomRight.eq(1), 0.1, { scale: 0.8, x: '+=7', y: '+=3' }, '-=0.1');
+  tl2.to($circlesBottomRight.eq(2), 0.1, { scale: 0.2, x: '+=15', y: '-=6' }, '-=0.2');
+  tl2.to($circlesBottomRight.eq(0), 1, { scale: 0, x: '+=5', y: '+=15', opacity: 0 });
+  tl2.to($circlesBottomRight.eq(1), 1, { scale: 0.4, x: '+=7', y: '+=7', opacity: 0 }, '-=1');
+  tl2.to($circlesBottomRight.eq(2), 1, { scale: 0, x: '+=15', y: '-=5', opacity: 0 }, '-=1');
+  
+  tlBt2.set($circlesBottomRight, { x: 0, y: 0, rotation: 45 });
+  tlBt2.add(tl2);
+
+  btTl.add(tlBt1);
+  btTl.to($(this).parent().find('.button.effect-button'), 0.8, { scaleY: 1.1 }, 0.1);
+  btTl.add(tlBt2, 0.2);
+  btTl.to($(this).parent().find('.button.effect-button'), 1.8, { scale: 1, ease: Elastic.easeOut.config(1.2, 0.4) }, 1.2);
+
+  btTl.timeScale(2.6);
+
+  $(this).on('mouseover', function() {
+    btTl.restart();
+  });
+});

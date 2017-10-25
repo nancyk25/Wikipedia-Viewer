@@ -1,0 +1,257 @@
+@import url(https://fonts.googleapis.com/css?family=Cabin);
+/* -- Resets -- */
+*, *:before, *:after {
+  margin: 0;
+  Padding: 0;
+  box-sizing: border-box;
+  /*border: 1px red solid;*/
+}
+
+/* -- Search input 
+(usually in structure, but placed here for visibility purpose) -- */
+.search {
+  height: 12vh;
+}
+
+.search a {
+  margin: 17px;
+}
+
+input[type="search"] {
+  padding: 1rem;
+  border: none;
+  width: 0px;
+  transition: all ease .3s;
+}
+
+.search:hover input {
+  width: 40%;
+  display: inline-block;
+  transition: all ease .3s;
+  font-size: 1rem;
+  font-weight: 300;
+  border-left: 4px #333 solid;
+}
+
+/*---Typography---*/
+html {
+  font-family: Cabin;
+  font-size: 1.3em;
+  text-align: center;
+  color: #333;
+}
+
+h1, h2, h3 {
+  font-size: 20px;
+  text-transform: uppercase;
+  margin-top: 2em;
+  letter-spacing: .3em;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+a:visited {
+  color: inherit;
+}
+
+a:active {
+  color: maroon;
+}
+
+p.links {
+  font-size: 1.3em;
+  margin: 2em;
+}
+
+.links a {
+  margin: .3em;
+}
+
+/* -- structure -- */
+div {
+  width: 100%;
+  margin: 0 auto;
+}
+
+section {
+  margin-top: 5em;
+}
+
+/*--Randomizer Button--*/
+* {
+  box-sizing: border-box;
+}
+
+div {
+  display: block;
+  /*height: 100%;*/
+  animation: hue-rotate 10s linear infinite;
+}
+
+.button {
+  -webkit-font-smoothing: antialiased;
+  background-color: #222;
+  border: none;
+  color: #fff;
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 100;
+  text-decoration: none;
+  user-select: none;
+  letter-spacing: 1px;
+  color: white;
+  padding: 20px 40px;
+  text-transform: uppercase;
+  transition: all 0.1s ease-out;
+}
+.button:hover {
+  background-color: #90feb5;
+  color: #fff;
+}
+.button:active {
+  transform: scale(0.95);
+}
+.button--bubble {
+  position: relative;
+  z-index: 2;
+  color: white;
+  background: none;
+}
+.button--bubble:hover {
+  background: none;
+}
+.button--bubble:hover + .button--bubble__effect-container .circle {
+  background: #44fd82;
+}
+.button--bubble:hover + .button--bubble__effect-container .button {
+  background: #44fd82;
+}
+.button--bubble:active + .button--bubble__effect-container {
+  transform: scale(0.95);
+}
+.button--bubble__container {
+  position: relative;
+  display: inline-block;
+}
+.button--bubble__container .effect-button {
+  position: absolute;
+  width: 50%;
+  height: 25%;
+  top: 50%;
+  left: 25%;
+  z-index: 1;
+  transform: translateY(-50%);
+  background: #222;
+  transition: background 0.1s ease-out;
+}
+
+.button--bubble__effect-container {
+  position: absolute;
+  display: block;
+  width: 200%;
+  height: 400%;
+  top: -150%;
+  left: -50%;
+  -webkit-filter: url("#goo");
+  filter: url("#goo");
+  transition: all 0.1s ease-out;
+  pointer-events: none;
+}
+.button--bubble__effect-container .circle {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 15px;
+  background: #222;
+  transition: background 0.1s ease-out;
+}
+.button--bubble__effect-container .circle.top-left {
+  top: 40%;
+  left: 27%;
+}
+.button--bubble__effect-container .circle.bottom-right {
+  bottom: 40%;
+  right: 27%;
+}
+
+.goo {
+  position: absolute;
+  visibility: hidden;
+  width: 1px;
+  height: 1px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.button--bubble__container {
+  color: white;
+  top: 50%;
+  margin-top: -25px;
+  margin: 0 auto;
+  position: relative;
+  top: -10px;
+}
+
+@keyframes hue-rotate {
+  from {
+    -webkit-filter: hue-rotate(0);
+    -moz-filter: hue-rotate(0);
+    -ms-filter: hue-rotate(0);
+    filter: hue-rotate(0);
+  }
+  to {
+    -webkit-filter: hue-rotate(360deg);
+    -moz-filter: hue-rotate(360deg);
+    -ms-filter: hue-rotate(360deg);
+    filter: hue-rotate(360deg);
+  }
+}
+form {
+  margin: 10px;
+  padding: 5px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper {
+  margin: 0 auto;
+  padding: 5px;
+  position: relative;
+  top: 60px;
+}
+
+/*Results styling*/
+.results {
+  width: 50%;
+}
+
+.result {
+  color: #333;
+  text-decoration: none;
+  width: 100%;
+  max-width: 31.25rem;
+  margin: 0 auto;
+  display: block;
+  background-color: #fff;
+  padding: 1.25rem;
+  margin-bottom: 0.3125rem;
+  text-align: left;
+  border-bottom: 0.1875rem solid #8a8787;
+  box-shadow: 0.0625rem 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
+  transition: 0.1s ease-out all;
+}
+.result:hover {
+  color: black;
+  border-color: black;
+}
